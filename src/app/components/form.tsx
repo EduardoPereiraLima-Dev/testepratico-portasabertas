@@ -1,7 +1,6 @@
  "use client";
- import next from 'next'; 
 import React from 'react';
-import { useState } from '  react';
+import { useState } from 'react';
 
 export default function Form() {
   const [formData, setFormData] = useState({

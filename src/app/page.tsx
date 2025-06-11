@@ -1,12 +1,5 @@
-import Image from "next/image";
-import form from "../app/components/form";
-
+import { redirect } from "next/navigation"
 
 export default function Home() {
-  return (
-    <main>
-      <form />
-      
-    </main>
-  );
+  redirect("/login")
 }
