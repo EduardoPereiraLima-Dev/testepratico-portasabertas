@@ -104,7 +104,7 @@ export function RegisterForm() {
       } else {
         setApiError("❌ Token inválido ou expirado. Verifique o arquivo .env.local")
       }
-    } catch (error) {
+    } catch {
       setApiError("❌ Erro ao testar token")
     } finally {
       setIsLoading(false)
@@ -122,7 +122,7 @@ export function RegisterForm() {
     setIsLoading(true)
     try {
       // Remove confirmPassword antes de enviar para a API
-      const { confirmPassword, ...apiData } = formData
+      const { confirmPassword: _, ...apiData } = formData
       await registerUser(apiData)
       setSuccess(true)
 
@@ -130,8 +130,12 @@ export function RegisterForm() {
       setTimeout(() => {
         router.push("/login")
       }, 2000)
-    } catch (error: any) {
-      setApiError(error.message || "Falha ao registrar. Por favor, tente novamente.")
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setApiError(error.message || "Falha ao registrar. Por favor, tente novamente.")
+      } else {
+        setApiError("Falha ao registrar. Por favor, tente novamente.")
+      }
     } finally {
       setIsLoading(false)
     }

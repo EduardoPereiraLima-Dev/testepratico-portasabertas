@@ -29,7 +29,7 @@ interface RegisterData {
 interface ApiResponse {
   success: boolean
   message?: string
-  data?: any
+  data?: unknown
   name?: string
 }
 
@@ -70,15 +70,28 @@ export async function loginUser(data: LoginData): Promise<ApiResponse> {
     }
 
     return result
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Erro no login:", error)
 
     // Se for erro de rede
-    if (error.name === "TypeError" && error.message.includes("fetch")) {
-      throw new Error("Erro de conexão. Verifique sua internet.")
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "name" in error &&
+      "message" in error &&
+      typeof (error as { name: unknown }).name === "string" &&
+      typeof (error as { message: unknown }).message === "string"
+    ) {
+      if (
+        (error as { name: string }).name === "TypeError" &&
+        (error as { message: string }).message.includes("fetch")
+      ) {
+        throw new Error("Erro de conexão. Verifique sua internet.")
+      }
+      throw new Error((error as { message: string }).message || "Erro desconhecido ao fazer login")
     }
 
-    throw new Error(error.message || "Erro desconhecido ao fazer login")
+    throw new Error("Erro desconhecido ao fazer login")
   }
 }
 
@@ -126,15 +139,28 @@ export async function registerUser(data: RegisterData): Promise<ApiResponse> {
     }
 
     return result
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Erro no cadastro:", error)
 
     // Se for erro de rede
-    if (error.name === "TypeError" && error.message.includes("fetch")) {
-      throw new Error("Erro de conexão. Verifique sua internet.")
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "name" in error &&
+      "message" in error &&
+      typeof (error as { name: unknown }).name === "string" &&
+      typeof (error as { message: unknown }).message === "string"
+    ) {
+      if (
+        (error as { name: string }).name === "TypeError" &&
+        (error as { message: string }).message.includes("fetch")
+      ) {
+        throw new Error("Erro de conexão. Verifique sua internet.")
+      }
+      throw new Error((error as { message: string }).message || "Erro desconhecido ao cadastrar usuário")
     }
 
-    throw new Error(error.message || "Erro desconhecido ao cadastrar usuário")
+    throw new Error("Erro desconhecido ao cadastrar usuário")
   }
 }
 

@@ -79,8 +79,12 @@ export function LoginForm() {
       )
 
       router.push("/dashboard")
-    } catch (error: any) {
-      setApiError(error.message || "Falha ao fazer login. Verifique suas credenciais.")
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setApiError(error.message || "Falha ao fazer login. Verifique suas credenciais.")
+      } else {
+        setApiError("Falha ao fazer login. Verifique suas credenciais.")
+      }
     } finally {
       setIsLoading(false)
     }
