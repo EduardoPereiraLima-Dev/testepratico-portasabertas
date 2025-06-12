@@ -86,7 +86,7 @@ export function LoginForm() {
 
   return (
     <>
-      <ConfigChecker />
+      
 
       {/* logotipo */}
       <div className="flex justify-center mb-6">
