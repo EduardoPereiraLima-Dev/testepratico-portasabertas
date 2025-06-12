@@ -1,15 +1,15 @@
 "use client"
 
 import type React from "react"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { z } from "zod"
 import { FormInput } from "./form-input"
-import { Button } from "./ui/button"
-import { registerUser, testToken } from "../sevice/api"
+import { Button } from "../components/ui/button"
+import { registerUser } from "../sevice/api"
 import { Alert } from "../components/ui/alert"
-import { ConfigChecker } from "./config-checker"
 import Image from "next/image"
 
 const registerSchema = z
@@ -44,11 +44,10 @@ export function RegisterForm() {
   const [apiError, setApiError] = useState("")
   const [success, setSuccess] = useState(false)
 
-  // Função para lidar com mudanças nos campos do formulário (inclui formatação do CPF)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
 
-    // Formata o CPF enquanto o usuário digita
+    // Format CPF as user types
     if (name === "document") {
       const digits = value.replace(/\D/g, "")
       let formattedValue = ""
@@ -68,13 +67,12 @@ export function RegisterForm() {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
-    // Limpa o erro do campo ao digitar
+    // Clear error when user types
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }))
     }
   }
 
-  // Função para validar o formulário usando o schema do Zod
   const validateForm = () => {
     try {
       registerSchema.parse(formData)
@@ -93,25 +91,6 @@ export function RegisterForm() {
     }
   }
 
-  // Função para testar o token da API
-  const handleTestToken = async () => {
-    setIsLoading(true)
-    try {
-      const isValid = await testToken()
-      if (isValid) {
-        setApiError("")
-        alert("✅ Token está funcionando!")
-      } else {
-        setApiError("❌ Token inválido ou expirado. Verifique o arquivo .env.local")
-      }
-    } catch {
-      setApiError("❌ Erro ao testar token")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Função para lidar com o envio do formulário de cadastro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setApiError("")
@@ -121,21 +100,17 @@ export function RegisterForm() {
 
     setIsLoading(true)
     try {
-      // Remove confirmPassword antes de enviar para a API
-      const { confirmPassword: _, ...apiData } = formData
+      // Remove confirmPassword as it's not needed for the API
+      const { confirmPassword, ...apiData } = formData
       await registerUser(apiData)
       setSuccess(true)
 
-      // Redireciona para o login após cadastro com sucesso
+      // Redirect to login after successful registration
       setTimeout(() => {
         router.push("/login")
       }, 2000)
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setApiError(error.message || "Falha ao registrar. Por favor, tente novamente.")
-      } else {
-        setApiError("Falha ao registrar. Por favor, tente novamente.")
-      }
+    } catch (error: any) {
+      setApiError(error.message || "Falha ao registrar. Por favor, tente novamente.")
     } finally {
       setIsLoading(false)
     }
@@ -143,23 +118,20 @@ export function RegisterForm() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-6 text-center text-bg-gray-900">
-        <Image src="/Logotipo.png" alt="Portas Abertas Logo" width={150} height={40} className="mx-auto mb-4" />
-        <h2 className="text-lg font-medium text-gray-900">Novo cadastro</h2>
+      <div className="mb-6 text-center">
+        <Image
+          src="/placeholder.svg?height=40&width=150"
+          alt="Portas Abertas Logo"
+          width={150}
+          height={40}
+          className="mx-auto mb-4"
+        />
+        <h2 className="text-lg font-medium">Novo cadastro</h2>
       </div>
-
-      <ConfigChecker />
 
       {apiError && (
         <Alert variant="destructive" className="mb-4">
-          <div className="flex flex-col gap-2">
-            <span>{apiError}</span>
-            {apiError.includes("Token") && (
-              <Button type="button" variant="outline" size="sm" onClick={handleTestToken} disabled={isLoading}>
-                🔍 Testar Token
-              </Button>
-            )}
-          </div>
+          {apiError}
         </Alert>
       )}
 
@@ -169,7 +141,7 @@ export function RegisterForm() {
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4 text-gray-900">
+      <form onSubmit={handleSubmit} className="w-full space-y-4">
         <FormInput
           label="Nome completo"
           name="name"
@@ -228,7 +200,7 @@ export function RegisterForm() {
           required
         />
 
-        <Button type="submit" className="w-full text-amber-50 bg-purple-700 hover:bg-purple-800" disabled={isLoading}>
+        <Button type="submit" className="w-full bg-purple-700 hover:bg-purple-800" disabled={isLoading}>
           {isLoading ? "Cadastrando..." : "Realizar cadastro"}
         </Button>
       </form>

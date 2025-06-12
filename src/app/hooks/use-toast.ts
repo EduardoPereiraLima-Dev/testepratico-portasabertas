@@ -22,12 +22,12 @@ type ToasterToast = ToastProps & {
 }
 
 // Tipos de ações possíveis para manipulação dos toasts
-const actionTypes = {
+type ActionType = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
   DISMISS_TOAST: "DISMISS_TOAST",
   REMOVE_TOAST: "REMOVE_TOAST",
-} as const
+}
 
 // Contador para gerar IDs únicos para os toasts
 let count = 0
@@ -37,8 +37,6 @@ function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
 }
-
-type ActionType = typeof actionTypes
 
 // Tipos de ações aceitas pelo reducer
 type Action =

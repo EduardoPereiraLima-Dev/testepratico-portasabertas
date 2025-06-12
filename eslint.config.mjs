@@ -1,16 +1,58 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginTypeScript from '@typescript-eslint/eslint-plugin';
+import parserTypeScript from '@typescript-eslint/parser';
+import nextPlugin from 'eslint-plugin-next';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+/** @type {import('eslint').Linter.Config} */
+export default {
+  ignores: ['node_modules/', '.next/', 'out/', 'dist/'],
+  plugins: {
+    '@typescript-eslint': eslintPluginTypeScript,
+    import: eslintPluginImport,
+    next: nextPlugin
+  },
+  languageOptions: {
+    parser: parserTypeScript,
+    parserOptions: {
+      project: './tsconfig.json',
+      ecmaVersion: 'latest',
+      sourceType: 'module'
+    }
+  },
+  rules: {
+    // Evita variáveis não usadas
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+    // Proíbe uso de 'any'
+    '@typescript-eslint/no-explicit-any': 'error',
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
+    // Exige ponto e vírgula
+    'semi': ['error', 'always'],
 
-export default eslintConfig;
+    // Aspas simples
+    'quotes': ['error', 'single', { avoidEscape: true }],
+
+    // Ordena imports
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        'newlines-between': 'always'
+      }
+    ],
+
+    // Limita linhas em branco consecutivas
+    'no-multiple-empty-lines': ['error', { max: 1 }],
+
+    // Obriga chaves em blocos de controle
+    'curly': ['error', 'all'],
+
+    // Exige tipagem explícita em funções públicas
+    '@typescript-eslint/explicit-function-return-type': 'warn'
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {}
+    }
+  }
+};

@@ -27,8 +27,6 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState("")
 
-  // Função para lidar com mudanças nos campos do formulário
-  // Atualiza o estado do formulário e limpa erros específicos do campo alterado
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -38,8 +36,6 @@ export function LoginForm() {
     }
   }
 
-  // Função para validar o formulário usando o schema do Zod
-  // Retorna true se válido, senão define os erros e retorna false
   const validateForm = () => {
     try {
       loginSchema.parse(formData)
@@ -58,8 +54,6 @@ export function LoginForm() {
     }
   }
 
-  // Função chamada ao submeter o formulário
-  // Valida os dados, faz login via API e redireciona em caso de sucesso
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setApiError("")
@@ -95,7 +89,7 @@ export function LoginForm() {
       <ConfigChecker />
 
       {/* logotipo */}
-      <div className="flex justify-center mb-6 text-gray-900">
+      <div className="flex justify-center mb-6">
         <Image
           src="/Logotipo.png"
           alt="Logo Portal Alerta"
@@ -112,7 +106,7 @@ export function LoginForm() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-4 text-gray-900">
+        <div className="space-y-4 text-gray-700">
           <FormInput
             label="Email" 
             name="email"
@@ -134,7 +128,7 @@ export function LoginForm() {
         </div>
         <Button
           type="submit"
-          className="w-full text-amber-50 bg-purple-700 hover:bg-purple-800"
+          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 py-2.5 text-lg font-semibold hover:from-indigo-700 hover:to-purple-700"
           disabled={isLoading}
         >
           {isLoading ? "Entrando..." : "Entrar"}
