@@ -42,8 +42,8 @@ Este projeto foi desenvolvido como parte de um teste técnico para desenvolvedor
 ### Instalação
 
 1. **Clone o repositório:**
-   \`\`\`bash
-   git clone <url-do-repositorio>
+   ``bash
+   git clone https://github.com/EduardoPereiraLima-Dev/testepratico-portasabertas
    cd auth-test
    \`\`\`
 
@@ -79,7 +79,7 @@ Este projeto foi desenvolvido como parte de um teste técnico para desenvolvedor
 
 ## 📁 Estrutura do Projeto
 
-\`\`\`
+`
 auth-test/
 ├── app/                    # App Router do Next.js
 │   ├── dashboard/         # Página do dashboard
@@ -97,7 +97,7 @@ auth-test/
 │   └── api.ts           # Funções de integração
 ├── hooks/               # Custom hooks
 └── lib/                 # Utilitários
-\`\`\`
+`\``
 
 ## 🎯 Funcionalidades Detalhadas
 
