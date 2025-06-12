@@ -27,15 +27,19 @@ export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [apiError, setApiError] = useState("")
 
+  // Função para lidar com mudanças nos campos do formulário
+  // Atualiza o estado do formulário e limpa erros específicos do campo alterado
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
-    // Clear error when user types
+    setApiError("")
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }))
     }
   }
 
+  // Função para validar o formulário usando o schema do Zod
+  // Retorna true se válido, senão define os erros e retorna false
   const validateForm = () => {
     try {
       loginSchema.parse(formData)
@@ -54,6 +58,8 @@ export function LoginForm() {
     }
   }
 
+  // Função chamada ao submeter o formulário
+  // Valida os dados, faz login via API e redireciona em caso de sucesso
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setApiError("")
@@ -64,13 +70,12 @@ export function LoginForm() {
     try {
       const response = await loginUser(formData)
 
-      // Store user data in localStorage (in a real app, you'd use a more secure method)
       localStorage.setItem(
         "user",
         JSON.stringify({
           name: response.name || "Usuário",
           email: formData.email,
-        }),
+        })
       )
 
       router.push("/dashboard")
@@ -82,13 +87,19 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="mb-6 text-center">
-        <Image src="/images/logo.svg" alt="Portas Abertas Logo" width={150} height={40} className="mx-auto mb-4" />
-        <h2 className="text-lg font-medium">Entre na sua Conta</h2>
-      </div>
-
+    <>
       <ConfigChecker />
+
+      {/* logotipo */}
+      <div className="flex justify-center mb-6 text-gray-900">
+        <Image
+          src="/Logotipo.png"
+          alt="Logo Portal Alerta"
+          width={180}
+          height={60}
+          priority
+        />
+      </div>
 
       {apiError && (
         <Alert variant="destructive" className="mb-4">
@@ -96,40 +107,44 @@ export function LoginForm() {
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
-        <FormInput
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          error={errors.email}
-          required
-        />
-
-        <FormInput
-          label="Senha"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          error={errors.password}
-          required
-        />
-
-        <Button type="submit" className="w-full bg-purple-700 hover:bg-purple-800" disabled={isLoading}>
-          {isLoading ? "Entrando..." : "Entrar na conta"}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-4 text-gray-900">
+          <FormInput
+            label="Email" 
+            name="email"
+            type="email"
+            placeholder="seu@email.com"
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <FormInput
+            label="Senha"
+            name="password"
+            type="password"
+            placeholder="••••••••"
+            value={formData.password}
+            onChange={handleChange}
+            error={errors.password}
+          />
+        </div>
+        <Button
+          type="submit"
+          className="w-full text-amber-50 bg-purple-700 hover:bg-purple-800"
+          disabled={isLoading}
+        >
+          {isLoading ? "Entrando..." : "Entrar"}
         </Button>
       </form>
 
-      <div className="mt-4 text-center">
-        <p>
-          Não tem uma conta?{" "}
-          <Link href="/register" className="text-purple-700 hover:underline">
-            Cadastre-se
-          </Link>
-        </p>
+      <div className="mt-6 text-center">
+        <Link
+          href="/register"
+          className="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+        >
+          Não tem uma conta? Cadastre-se
+        </Link>
       </div>
-    </div>
+    </>
   )
 }

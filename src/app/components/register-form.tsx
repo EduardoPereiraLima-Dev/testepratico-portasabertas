@@ -44,10 +44,11 @@ export function RegisterForm() {
   const [apiError, setApiError] = useState("")
   const [success, setSuccess] = useState(false)
 
+  // Função para lidar com mudanças nos campos do formulário (inclui formatação do CPF)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
 
-    // Format CPF as user types
+    // Formata o CPF enquanto o usuário digita
     if (name === "document") {
       const digits = value.replace(/\D/g, "")
       let formattedValue = ""
@@ -67,12 +68,13 @@ export function RegisterForm() {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
-    // Clear error when user types
+    // Limpa o erro do campo ao digitar
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }))
     }
   }
 
+  // Função para validar o formulário usando o schema do Zod
   const validateForm = () => {
     try {
       registerSchema.parse(formData)
@@ -91,7 +93,7 @@ export function RegisterForm() {
     }
   }
 
-  // Função para testar o token
+  // Função para testar o token da API
   const handleTestToken = async () => {
     setIsLoading(true)
     try {
@@ -109,6 +111,7 @@ export function RegisterForm() {
     }
   }
 
+  // Função para lidar com o envio do formulário de cadastro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setApiError("")
@@ -118,12 +121,12 @@ export function RegisterForm() {
 
     setIsLoading(true)
     try {
-      // Remove confirmPassword as it's not needed for the API
+      // Remove confirmPassword antes de enviar para a API
       const { confirmPassword, ...apiData } = formData
       await registerUser(apiData)
       setSuccess(true)
 
-      // Redirect to login after successful registration
+      // Redireciona para o login após cadastro com sucesso
       setTimeout(() => {
         router.push("/login")
       }, 2000)
@@ -136,9 +139,9 @@ export function RegisterForm() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-6 text-center">
-        <Image src="/images/logo.svg" alt="Portas Abertas Logo" width={150} height={40} className="mx-auto mb-4" />
-        <h2 className="text-lg font-medium">Novo cadastro</h2>
+      <div className="mb-6 text-center text-bg-gray-900">
+        <Image src="/Logotipo.png" alt="Portas Abertas Logo" width={150} height={40} className="mx-auto mb-4" />
+        <h2 className="text-lg font-medium text-gray-900">Novo cadastro</h2>
       </div>
 
       <ConfigChecker />
@@ -162,7 +165,7 @@ export function RegisterForm() {
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
+      <form onSubmit={handleSubmit} className="w-full space-y-4 text-gray-900">
         <FormInput
           label="Nome completo"
           name="name"
@@ -221,7 +224,7 @@ export function RegisterForm() {
           required
         />
 
-        <Button type="submit" className="w-full bg-purple-700 hover:bg-purple-800" disabled={isLoading}>
+        <Button type="submit" className="w-full text-amber-50 bg-purple-700 hover:bg-purple-800" disabled={isLoading}>
           {isLoading ? "Cadastrando..." : "Realizar cadastro"}
         </Button>
       </form>
